@@ -1,0 +1,66 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  roles:
+    - role: "avinetworks.avisdk"
+
+  tasks:
+
+    - name: Debug
+      debug:
+        msg: "{{ avi_credentials }}"
+      tags:
+        - debug
+      when:
+        - nsxt is defined or lsc is defined
+
+
+    - name: Create a Cloud connector user for NSX-T
+      avi_cloudconnectoruser:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        name: credsNsxt
+        nsxt_credentials:
+          username: "{{ nsx_username }}"
+          password: "{{ nsx_password }}"
+      register: nsxtUserOutput
+      tags:
+        - cloud
+      when:
+        - nsxt is defined
+        - nsx_username is defined
+        - nsx_password is defined
+
+    - name: Create a Cloud connector user for NSX-T (vcenter)
+      avi_cloudconnectoruser:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        name: credsVcenter
+        vcenter_credentials:
+          username: "{{ vsphere_username }}"
+          password: "{{ vsphere_password }}"
+      register: vcenterUserOutput
+      tags:
+        - cloud
+      when:
+        - nsxt is defined
+        - vsphere_username is defined
+        - vsphere_password is defined
+
+    - name: Debug
+      debug:
+        msg: "{{ nsxtUserOutput.obj.uuid }}"
+      tags:
+        - debug
+      when:
+        - nsxt is defined
+
+    - name: Debug
+      debug:
+        msg: "{{ vcenterUserOutput.obj.uuid }}"
+      tags:
+        - debug
+      when:
+        - nsxt is defined
