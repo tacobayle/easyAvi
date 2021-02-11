@@ -95,20 +95,20 @@ variable "nsxt" {
       }
     ]
     transport_zone = {
-      name = "N1_TZ_nested_nsx-overlay" # dynamic
+      name = "TNT69-OVERLAY-TZ | Overlay" # dynamic
     }
     tier1s = [
       {
         name     = "T1_AVI" # dynamic
         description = "Created by TF - For Avi Build"
         route_advertisement_types = ["TIER1_STATIC_ROUTES", "TIER1_CONNECTED", "TIER1_LB_VIP"] # static
-        tier0 = "N1_T0" # dynamic
+        tier0 = "TNT69-T0" # dynamic
       }
     ]
     management_network = {
-      name = "N1-T1_Segment-Mgmt-10.7.3.0-24"
-      tier1 = "N1-T1_AVI"
-      cidr = "10.7.3.0/24"
+      name = "Avi_mgmt"
+      tier1 = "T1_AVI"
+      cidr = "192.168.55.0/24"
       ipStartPool = "11"
       ipEndPool = "50"
       type = "V4"
@@ -117,9 +117,9 @@ variable "nsxt" {
       vcenter_dvs = "true"
     }
     network_vip = {
-      name = "N1-T1_Segment-VIP-A_10.7.4.0-24"
-      tier1 = "N1-T1_AVI"
-      cidr = "10.7.4.0/24"
+      name = "Avi_vip"
+      tier1 = "T1_AVI"
+      cidr = "192.168.56.0/24"
       type = "V4"
       ipStartPool = "11"
       ipEndPool = "50"
@@ -129,15 +129,15 @@ variable "nsxt" {
       gateway = "1"
     }
     network_backend = {
-      name = "N1-T1_Segment-Backend_10.7.6.0-24"
-      tier1 = "N1-T1_AVI"
-      cidr = "10.7.6.0/24"
+      name = "Avi_backend"
+      tier1 = "T1_AVI"
+      cidr = "192.168.57.0/24"
     }
     vcenter = {
       server = "https://10.7.0.2/" # dynamic
       dc = "SDDC-Datacenter" # static
       cluster = "Cluster-1" # static
-      datastore = "WorkloadDatastore" # static
+      datastore = "vsanDatastore" # static
       resource_pool = "Cluster-1/Resources" # static
       folderApps = "Avi-Apps" # static
       folderAvi = "Avi-Controllers" # static
