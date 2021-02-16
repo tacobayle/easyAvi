@@ -225,7 +225,7 @@
               type: 'V4'
       loop: "{{ nsxt.pools | product(avi_backend_servers_nsxt)|list }}"
       loop_control:
-        label: "pool {{ item.0.name }} patch with {{ item.1 }}"
+        label: "pool {{ item.0.name }} patch with {{ item.1.0 }}"
       when:
         - avi_backend_servers_nsxt is defined
         - nsxt.pools is defined
