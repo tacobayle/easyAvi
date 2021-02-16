@@ -196,7 +196,7 @@
     - name: sleep for 180 seconds and continue with play - if Public Controller IP has been configured
       wait_for: timeout=180
       when:
-        - controller.enablePublicIP is definedÉvires, 74570 Fillière
+        - controller.enablePublicIP is defined
       tags:
         - cluster
 
