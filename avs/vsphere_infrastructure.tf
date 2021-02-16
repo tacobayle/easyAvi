@@ -47,6 +47,14 @@ resource "vsphere_folder" "folderApps" {
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
+resource "vsphere_folder" "folderSes" {
+  count = length(var.nsxt.serviceEngineGroup)
+  path          = var.nsxt.serviceEngineGroup[count.index].vcenter_folder
+  type          = "vm"
+  datacenter_id = data.vsphere_datacenter.dc.id
+}
+
+
 resource "vsphere_tag_category" "ansible_group_backend" {
   name = "ansible_group_backend"
   cardinality = "SINGLE"

@@ -143,6 +143,7 @@ variable "nsxt" {
       resource_pool = "Cluster-1/Resources" # static
       folderApps = "Avi-Apps" # static
       folderAvi = "Avi-Controllers" # static
+      folderSe =
       content_library = {
         name = "Avi SE Content Library" # static
         description = "TF built - Avi SE Content Library" # static
@@ -155,7 +156,7 @@ variable "nsxt" {
         min_scaleout_per_vs = 2
         buffer_se = 1
         extra_shared_config_memory = 0
-        vcenter_folder = "Avi-SE"
+        vcenter_folder = "Avi-SE-Default-Group"
         vcpus_per_se = 1
         memory_per_se = 2048
         disk_per_se = 25
@@ -165,32 +166,12 @@ variable "nsxt" {
         }
       },
       {
-        name = "seGroupCpuAutoScale"
-        ha_mode = "HA_MODE_SHARED"
-        min_scaleout_per_vs = 2
-        buffer_se = 0
-        extra_shared_config_memory = 0
-        vcenter_folder = "Avi-SE"
-        vcpus_per_se = 1
-        memory_per_se = 1024
-        disk_per_se = 25
-        auto_rebalance = true
-        auto_rebalance_interval = 30
-        auto_rebalance_criteria = [
-          "SE_AUTO_REBALANCE_CPU"
-        ]
-        realtime_se_metrics = {
-          enabled = true
-          duration = 0
-        }
-      },
-      {
-        name = "seGroupGslb"
+        name = "seg-GSLB"
         ha_mode = "HA_MODE_SHARED"
         min_scaleout_per_vs = 1
         buffer_se = 0
         extra_shared_config_memory = 2000
-        vcenter_folder = "Avi-SE"
+        vcenter_folder = "Avi-SE-GSLB"
         vcpus_per_se = 2
         memory_per_se = 8192
         disk_per_se = 25
@@ -277,7 +258,7 @@ variable "nsxt" {
       }
     ]
     pool_nsxt_group = {
-      name = "pool2BasedOnNsxtGroup"
+      name = "pool3BasedOnNsxtGroup"
       lb_algorithm = "LB_ALGORITHM_ROUND_ROBIN"
       nsxt_group_name = "n1-avi-backend"
     }
@@ -362,7 +343,7 @@ variable "nsxt" {
               port = 53
             }
           ]
-          se_group_ref: "seGroupGslb"
+          se_group_ref: "seg-GSLB"
         }
       ]
     }
