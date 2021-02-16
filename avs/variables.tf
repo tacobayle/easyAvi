@@ -86,7 +86,7 @@ variable "nsxt" {
   default = {
     name = "cloudAvs" # static
     application = true # dynamic
-    server = "https://10.7.0.3/" # dynamic
+    server = "10.7.0.3" # dynamic
     dhcp_enabled = "false" # static
     obj_name_prefix = "AVINSXT" # static
     domains = [
@@ -95,7 +95,7 @@ variable "nsxt" {
       }
     ]
     transport_zone = {
-      name = "TNT69-OVERLAY-TZ | Overlay" # dynamic
+      name = "TNT69-OVERLAY-TZ" # dynamic
     }
     tier1s = [
       {
@@ -134,7 +134,7 @@ variable "nsxt" {
       cidr = "192.168.57.0/24"
     }
     vcenter = {
-      server = "https://10.7.0.2/" # dynamic
+      server = "10.7.0.2" # dynamic
       dc = "SDDC-Datacenter" # static
       cluster = "Cluster-1" # static
       datastore = "vsanDatastore" # static

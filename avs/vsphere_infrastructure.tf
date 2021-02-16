@@ -18,19 +18,19 @@ data "vsphere_resource_pool" "pool" {
 }
 
 data "vsphere_network" "networkMgt" {
-  depends_on = [time_sleep.wait_segment]
+//  depends_on = [time_sleep.wait_segment]
   name = var.nsxt.management_network.name
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
 data "vsphere_network" "networkBackend" {
-  depends_on = [time_sleep.wait_segment]
+//  depends_on = [time_sleep.wait_segment]
   name = var.nsxt.network_backend.name
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
 data "vsphere_network" "networkClient" {
-  depends_on = [time_sleep.wait_segment]
+//  depends_on = [time_sleep.wait_segment]
   name = var.nsxt.network_vip.name
   datacenter_id = data.vsphere_datacenter.dc.id
 }
