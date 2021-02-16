@@ -143,7 +143,6 @@ variable "nsxt" {
       resource_pool = "Cluster-1/Resources" # static
       folderApps = "Avi-Apps" # static
       folderAvi = "Avi-Controllers" # static
-      folderSe =
       content_library = {
         name = "Avi SE Content Library" # static
         description = "TF built - Avi SE Content Library" # static
