@@ -8,6 +8,8 @@ data "template_file" "backend_userdata" {
   template = file("${path.module}/userdata/backend.userdata")
   vars = {
     pubkey       = file(var.publicKeyFile)
+    url_demovip_server = var.backend.url_demovip_server
+    username = var.backend.username
   }
 }
 
