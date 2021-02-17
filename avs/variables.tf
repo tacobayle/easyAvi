@@ -86,11 +86,11 @@ variable "client" {
 
 variable "nsxt" {
   default = {
-    name = "cloudAvs" # static
+    name = "cloudNsxt" # static
     application = true # dynamic
     server = "10.7.0.3" # dynamic
     dhcp_enabled = "false" # static
-    obj_name_prefix = "AVSNSXT" # static
+    obj_name_prefix = "AVSAVI" # static
     domains = [
       {
         name = "avi.avs.info" # dynamic if nsxt.application == true
@@ -139,6 +139,7 @@ variable "nsxt" {
       server = "10.7.0.2" # dynamic
       dc = "SDDC-Datacenter" # static
       cluster = "Cluster-1" # static
+      name = "vcenter-server-A"
       datastore = "vsanDatastore" # static
       resource_pool = "Cluster-1/Resources" # static
       folderApps = "Avi-Apps" # static
@@ -147,39 +148,39 @@ variable "nsxt" {
         name = "Avi SE Content Library" # static
         description = "TF built - Avi SE Content Library" # static
       }
+      serviceEngineGroup = [ # dynamic
+        {
+          name = "Default-Group"
+          ha_mode = "HA_MODE_SHARED"
+          min_scaleout_per_vs = 2
+          buffer_se = 1
+          extra_shared_config_memory = 0
+          vcenter_folder = "Avi-SE-Default-Group"
+          vcpus_per_se = 1
+          memory_per_se = 2048
+          disk_per_se = 25
+          realtime_se_metrics = {
+            enabled = true
+            duration = 0
+          }
+        },
+        {
+          name = "seg-GSLB"
+          ha_mode = "HA_MODE_SHARED"
+          min_scaleout_per_vs = 1
+          buffer_se = 0
+          extra_shared_config_memory = 2000
+          vcenter_folder = "Avi-SE-GSLB"
+          vcpus_per_se = 2
+          memory_per_se = 8192
+          disk_per_se = 25
+          realtime_se_metrics = {
+            enabled = true
+            duration = 0
+          }
+        }
+      ]
     }
-    serviceEngineGroup = [ # dynamic
-      {
-        name = "Default-Group"
-        ha_mode = "HA_MODE_SHARED"
-        min_scaleout_per_vs = 2
-        buffer_se = 1
-        extra_shared_config_memory = 0
-        vcenter_folder = "Avi-SE-Default-Group"
-        vcpus_per_se = 1
-        memory_per_se = 2048
-        disk_per_se = 25
-        realtime_se_metrics = {
-          enabled = true
-          duration = 0
-        }
-      },
-      {
-        name = "seg-GSLB"
-        ha_mode = "HA_MODE_SHARED"
-        min_scaleout_per_vs = 1
-        buffer_se = 0
-        extra_shared_config_memory = 2000
-        vcenter_folder = "Avi-SE-GSLB"
-        vcpus_per_se = 2
-        memory_per_se = 8192
-        disk_per_se = 25
-        realtime_se_metrics = {
-          enabled = true
-          duration = 0
-        }
-      }
-    ]
     httppolicyset = [
       {
         name = "http-request-policy-app3-content-switching-avs"
