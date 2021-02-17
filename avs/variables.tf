@@ -156,7 +156,7 @@ variable "nsxt" {
           buffer_se = 1
           extra_shared_config_memory = 0
           vcenter_folder = "Avi-SE-Default-Group"
-          vcpus_per_se = 1
+          vcpus_per_se = 2
           memory_per_se = 2048
           disk_per_se = 25
           realtime_se_metrics = {
