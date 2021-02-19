@@ -28,8 +28,8 @@ class aviSession:
 # Main Pyhton script
 #
 if __name__ == '__main__':
-    with open(fileCredential, 'r') as stream:
-        credential = json.load(stream)
-    stream.close
+#     with open(fileCredential, 'r') as stream:
+#         credential = json.load(stream)
+#     stream.close
     defineClass = aviSession(avi_credentials['controller'], avi_credentials['username'], avi_credentials['password'], tenant)
     print(json.dumps(defineClass.postObject(path, data)["resource"]["vcenter_folders"]))

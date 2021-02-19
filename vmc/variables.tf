@@ -66,6 +66,8 @@ variable "backend" {
     disk = 20
     wait_for_guest_net_routable = "false"
     template_name = "ubuntu-bionic-18.04-cloudimg-template"
+    url_demovip_server = "https://github.com/tacobayle/demovip_server"
+    username = "ubuntu"
   }
 }
 
