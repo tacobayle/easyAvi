@@ -4,7 +4,7 @@ import sys, json, yaml
 # Variables
 #
 # fileCredential = sys.argv[1]
-avi_credentials = yaml.load(sys.argv[1], Loader=yaml.FullLoader)
+avi_credentials = yaml.load(sys.argv[1])
 path = 'nsxt/groups'
 data = {"cloud_uuid": sys.argv[2]}
 # nsxtGroupName = sys.argv[3]

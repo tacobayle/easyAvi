@@ -4,7 +4,7 @@ import sys, json, yaml
 # Variables
 #
 #fileCredential = sys.argv[1]
-avi_credentials = yaml.load(sys.argv[1], Loader=yaml.FullLoader)
+avi_credentials = yaml.load(sys.argv[1])
 path = 'nsxt/tier1s'
 data = {"host": sys.argv[2], "credentials_uuid": sys.argv[3]}
 tier1router = sys.argv[4]

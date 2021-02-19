@@ -4,7 +4,7 @@ import sys, json, yaml
 # Variables
 #
 # fileCredential = sys.argv[1]
-avi_credentials = yaml.load(sys.argv[1], Loader=yaml.FullLoader)
+avi_credentials = yaml.load(sys.argv[1])
 tenant = "admin"
 cloudUuid = sys.argv[2]
 path = 'cloud-inventory'
