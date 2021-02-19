@@ -44,7 +44,7 @@
         - dns
 
     - name: python workaround to retrieve transport zone id - NSXT
-      command: python3 ../python/retrieveNsxtTransportZoneId.py "{{ controller.aviCredsJsonFile }}" "{{ nsxt.server }}" "{{ nsxtUserOutput.obj.uuid }}" "{{ nsxt.transport_zone.name }}"
+      command: python3 ../python/retrieveNsxtTransportZoneId.py "{{ avi_credentials | to_yaml }}" "{{ nsxt.server }}" "{{ nsxtUserOutput.obj.uuid }}" "{{ nsxt.transport_zone.name }}"
       ignore_errors: no
       register: nsxtTransportZoneId
       tags:
@@ -55,7 +55,7 @@
         - nsxt.server is defined
 
     - name: python workaround to retrieve tier1s for mgt - NSXT
-      command: python3 ../python/retrieveNsxtTier1s.py "{{ controller.aviCredsJsonFile }}" "{{ nsxt.server }}" "{{ nsxtUserOutput.obj.uuid }}" "{{ nsxt.management_network.tier1 }}"
+      command: python3 ../python/retrieveNsxtTier1s.py "{{ avi_credentials | to_yaml }}" "{{ nsxt.server }}" "{{ nsxtUserOutput.obj.uuid }}" "{{ nsxt.management_network.tier1 }}"
       ignore_errors: no
       register: nsxtTier1sMgtJson
       tags:
@@ -75,7 +75,7 @@
         - nsxt.server is defined
 
     - name: python workaround to retrieve tier1s for avi vip - NSXT
-      command: python3 ../python/retrieveNsxtTier1s.py "{{ controller.aviCredsJsonFile }}" "{{ nsxt.server }}" "{{ nsxtUserOutput.obj.uuid }}" "{{ nsxt.network_vip.tier1 }}"
+      command: python3 ../python/retrieveNsxtTier1s.py "{{ avi_credentials | to_yaml }}" "{{ nsxt.server }}" "{{ nsxtUserOutput.obj.uuid }}" "{{ nsxt.network_vip.tier1 }}"
       ignore_errors: no
       register: nsxtTier1sVipJson
       tags:
@@ -96,7 +96,7 @@
         - nsxt.server is defined
 
     - name: python workaround to retrieve segment details for avi management - NSXT
-      command: python3 ../python/retrieveNsxtSegment.py "{{ controller.aviCredsJsonFile }}" "{{ nsxt.server }}" "{{ nsxtUserOutput.obj.uuid }}" "{{ nsxtTransportZoneId.stdout }}" "{{ nsxt.management_network.name }}"
+      command: python3 ../python/retrieveNsxtSegment.py "{{ avi_credentials | to_yaml }}" "{{ nsxt.server }}" "{{ nsxtUserOutput.obj.uuid }}" "{{ nsxtTransportZoneId.stdout }}" "{{ nsxt.management_network.name }}"
       ignore_errors: no
       register: nsxtSegmentMgtJson
       tags:
@@ -116,7 +116,7 @@
         - nsxt.management_network.name is defined
 
     - name: python workaround to retrieve segment details for avi vip - NSXT
-      command: python3 ../python/retrieveNsxtSegment.py "{{ controller.aviCredsJsonFile }}" "{{ nsxt.server }}" "{{ nsxtUserOutput.obj.uuid }}" "{{ nsxtTransportZoneId.stdout }}" "{{ nsxt.network_vip.name }}"
+      command: python3 ../python/retrieveNsxtSegment.py "{{ avi_credentials | to_yaml }}" "{{ nsxt.server }}" "{{ nsxtUserOutput.obj.uuid }}" "{{ nsxtTransportZoneId.stdout }}" "{{ nsxt.network_vip.name }}"
       ignore_errors: no
       register: nsxtSegmentVipJson
       tags:
@@ -136,7 +136,7 @@
         - nsxt.server is defined
 
     - name: python workaround to retrieve segment details for avi backend network - NSXT
-      command: python3 ../python/retrieveNsxtSegment.py "{{ controller.aviCredsJsonFile }}" "{{ nsxt.server }}" "{{ nsxtUserOutput.obj.uuid }}" "{{ nsxtTransportZoneId.stdout }}" "{{ nsxt.network_backend.name }}"
+      command: python3 ../python/retrieveNsxtSegment.py "{{ avi_credentials | to_yaml }}" "{{ nsxt.server }}" "{{ nsxtUserOutput.obj.uuid }}" "{{ nsxtTransportZoneId.stdout }}" "{{ nsxt.network_backend.name }}"
       ignore_errors: no
       register: nsxtSegmentBacJson
       tags:
@@ -212,7 +212,7 @@
         - cloud
 
     - name: python workaround to retrieve vcenter content library info - NSXT
-      command: python3 ../python/retrieveNsxtVcentersLibrary.py "{{ controller.aviCredsJsonFile }}" "{{ nsxt.vcenter.server }}" "{{ vcenterUserOutput.obj.uuid }}" "{{ nsxt.vcenter.content_library.name }}"
+      command: python3 ../python/retrieveNsxtVcentersLibrary.py "{{ avi_credentials | to_yaml }}" "{{ nsxt.vcenter.server }}" "{{ vcenterUserOutput.obj.uuid }}" "{{ nsxt.vcenter.content_library.name }}"
       ignore_errors: no
       register: vcenterContentLibraryJson
       tags:
@@ -525,7 +525,7 @@
         - cloud
 
     - name: Run a python script against a specific cloud - this takes several minutes
-      command: python3 ../python/retrieveCloudStatus.py "{{ controller.aviCredsJsonFile }}" "{{ cloud_nsxt_uuid }}"
+      command: python3 ../python/retrieveCloudStatus.py "{{ avi_credentials | to_yaml }}" "{{ cloud_nsxt_uuid }}"
       register: logCloudStatus
       until: logCloudStatus.stdout == "IMG_GEN_COMPLETE"
       retries: 30
@@ -537,22 +537,21 @@
         - cloud
 
     - name: python workaround to retrieve folders uuid  - NSXT
-      command: python3 ../python/retrieveNsxtVcenterFolders.py "{{ controller.aviCredsJsonFile }}" "{{ cloud_nsxt_uuid }}" "{{ nsxt_vcenter_uuid }}"
+      command: python3 ../python/retrieveNsxtVcenterFolders.py "{{ avi_credentials | to_yaml }}" "{{ cloud_nsxt_uuid }}" "{{ nsxt_vcenter_uuid }}"
       ignore_errors: no
       register: vcenterFoldersJson
       tags:
         - cloud
         - nsxtApi
       when:
-        - controller.aviCredsJsonFile is defined
         - cloud_nsxt_uuid is defined
         - nsxt_vcenter_uuid is defined
 
-    - name: Debug
-      debug:
-        msg: "{{ vcenterFoldersJson }}"
-      when:
-        - vcenterFoldersJson is defined
+#    - name: Debug
+#      debug:
+#        msg: "{{ vcenterFoldersJson }}"
+#      when:
+#        - vcenterFoldersJson is defined
 
     - set_fact:
         vcenterFolders: "{{ vcenterFoldersJson.stdout | from_json }}"

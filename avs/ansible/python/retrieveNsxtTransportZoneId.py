@@ -3,7 +3,8 @@ import sys, json, yaml
 #
 # Variables
 #
-fileCredential = sys.argv[1]
+#fileCredential = sys.argv[1]
+avi_credentials = yaml.load(sys.argv[1], Loader=yaml.FullLoader)
 path = 'nsxt/transportzones'
 data = {"host": sys.argv[2], "credentials_uuid": sys.argv[3]}
 transportZone = sys.argv[4]
@@ -29,10 +30,10 @@ class aviSession:
 # Main Pyhton script
 #
 if __name__ == '__main__':
-    with open(fileCredential, 'r') as stream:
-        credential = json.load(stream)
-    stream.close
-    defineClass = aviSession(credential['avi_credentials']['controller'], credential['avi_credentials']['username'], credential['avi_credentials']['password'], tenant)
+#     with open(fileCredential, 'r') as stream:
+#         credential = json.load(stream)
+#     stream.close
+    defineClass = aviSession(avi_credentials['controller'], avi_credentials['avi_credentials']['username'], avi_credentials['avi_credentials']['password'], tenant)
     #print(defineClass.postObject(path, data)["resource"]["nsxt_transportzones"])
     for item in defineClass.postObject(path, data)["resource"]["nsxt_transportzones"]:
         if item['name'] == transportZone:

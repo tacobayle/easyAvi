@@ -3,7 +3,8 @@ import sys, json, yaml
 #
 # Variables
 #
-fileCredential = sys.argv[1]
+#fileCredential = sys.argv[1]
+avi_credentials = yaml.load(sys.argv[1], Loader=yaml.FullLoader)
 path = 'vcenter/contentlibraries'
 data = {"host": sys.argv[2], "credentials_uuid": sys.argv[3]}
 tenant = "admin"
@@ -30,10 +31,10 @@ class aviSession:
 # Main Pyhton script
 #
 if __name__ == '__main__':
-    with open(fileCredential, 'r') as stream:
-        credential = json.load(stream)
-    stream.close
-    defineClass = aviSession(credential['avi_credentials']['controller'], credential['avi_credentials']['username'], credential['avi_credentials']['password'], tenant)
+#     with open(fileCredential, 'r') as stream:
+#         credential = json.load(stream)
+#     stream.close
+    defineClass = aviSession(avi_credentials['controller'], avi_credentials['avi_credentials']['username'], avi_credentials['avi_credentials']['password'], tenant)
     for item in defineClass.postObject(path, data)["resource"]["vcenter_clibs"]:
         if item['name'] == contentLibraryName:
             result = item

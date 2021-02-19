@@ -3,7 +3,8 @@ import sys, json, yaml
 #
 # Variables
 #
-fileCredential = sys.argv[1]
+# fileCredential = sys.argv[1]
+avi_credentials = yaml.load(sys.argv[1], Loader=yaml.FullLoader)
 path = 'nsxt/groups'
 data = {"cloud_uuid": sys.argv[2]}
 # nsxtGroupName = sys.argv[3]
@@ -29,10 +30,10 @@ class aviSession:
 # Main Pyhton script
 #
 if __name__ == '__main__':
-    with open(fileCredential, 'r') as stream:
-        credential = json.load(stream)
-    stream.close
-    defineClass = aviSession(credential['avi_credentials']['controller'], credential['avi_credentials']['username'], credential['avi_credentials']['password'], tenant)
+#     with open(fileCredential, 'r') as stream:
+#         credential = json.load(stream)
+#     stream.close
+    defineClass = aviSession(avi_credentials['controller'], avi_credentials['avi_credentials']['username'], avi_credentials['avi_credentials']['password'], tenant)
     print(json.dumps(defineClass.postObject(path, data)))
     # #print(defineClass.postObject(path, data))
     # for item in defineClass.postObject(path, data)["resource"]["nsxt_groups"]:

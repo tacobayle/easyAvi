@@ -33,7 +33,6 @@ variable "controller" {
     se_in_provider_context = "false"
     tenant_access_to_provider_se = "true"
     tenant_vrf = "false"
-    aviCredsJsonFile = "~/.creds.json"
   }
 }
 

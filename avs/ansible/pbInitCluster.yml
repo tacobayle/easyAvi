@@ -231,9 +231,11 @@
       tags:
         - cluster
 
-    - name: save json creds
+    - name: save Avi json creds to file
       copy:
         content: '{"avi_credentials": {{ avi_credentials }} }'
-        dest: "{{ controller.aviCredsJsonFile | default('~/ansible/vars/creds.json') }}"
+        dest: "{{ controller.aviCredsJsonFile }}"
+      when:
+        - controller.aviCredsJsonFile is defined
       tags:
         - creds
