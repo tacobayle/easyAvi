@@ -33,7 +33,7 @@ if __name__ == '__main__':
 #     with open(fileCredential, 'r') as stream:
 #         credential = json.load(stream)
 #     stream.close
-    defineClass = aviSession(avi_credentials['controller'], avi_credentials['avi_credentials']['username'], avi_credentials['avi_credentials']['password'], tenant)
+    defineClass = aviSession(avi_credentials['controller'], avi_credentials['username'], avi_credentials['password'], tenant)
     #print(defineClass.postObject(path, data)["resource"]["nsxt_transportzones"])
     for item in defineClass.postObject(path, data)["resource"]["nsxt_transportzones"]:
         if item['name'] == transportZone:

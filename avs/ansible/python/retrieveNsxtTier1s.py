@@ -33,7 +33,7 @@ if __name__ == '__main__':
 #     with open(fileCredential, 'r') as stream:
 #         credential = json.load(stream)
 #     stream.close
-    defineClass = aviSession(avi_credentials['controller'], avi_credentials['avi_credentials']['username'], avi_credentials['avi_credentials']['password'], tenant)
+    defineClass = aviSession(avi_credentials['controller'], avi_credentials['username'], avi_credentials['password'], tenant)
     for item in defineClass.postObject(path, data)["resource"]["nsxt_tier1routers"]:
          if item['name'] == tier1router:
              result = item
