@@ -28,7 +28,7 @@ resource "null_resource" "foo" {
   provisioner "remote-exec" {
     inline      = [
       "chmod 600 ~/.ssh/${basename(var.privateKeyFile)}",
-      "cd ~/ansible ; ansible-playbook -i /opt/ansible/inventory/inventory.vmware.yml local.yml --extra-vars '{\"vsphere_username\": ${jsonencode(var.vsphere_username)}, \"vsphere_password\": ${jsonencode(var.vsphere_password)}, \"nsx_username\": ${jsonencode(var.nsx_username)}, \"nsx_password\": ${jsonencode(var.nsx_password)}, \"avi_username\": ${jsonencode(var.avi_username)}, \"avi_password\": ${jsonencode(var.avi_password)}, \"avi_version\": ${jsonencode(basename(var.aviOvaFile))}, \"controllerPrivateIps\": ${jsonencode(vsphere_virtual_machine.controller.*.default_ip_address)}, \"controller\": ${jsonencode(var.controller)}, \"nsxt\": ${jsonencode(var.nsxt)}, \"avi_backend_servers_nsxt\": ${jsonencode(vsphere_virtual_machine.backend.*.guest_ip_addresses)}}'",
+      "export ANSIBLE_NOCOLOR=\"True\" ; cd ~/ansible ; ansible-playbook -i /opt/ansible/inventory/inventory.vmware.yml local.yml --extra-vars '{\"vsphere_username\": ${jsonencode(var.vsphere_username)}, \"vsphere_password\": ${jsonencode(var.vsphere_password)}, \"nsx_username\": ${jsonencode(var.nsx_username)}, \"nsx_password\": ${jsonencode(var.nsx_password)}, \"avi_username\": ${jsonencode(var.avi_username)}, \"avi_password\": ${jsonencode(var.avi_password)}, \"avi_version\": ${jsonencode(basename(var.aviOvaFile))}, \"controllerPrivateIps\": ${jsonencode(vsphere_virtual_machine.controller.*.default_ip_address)}, \"controller\": ${jsonencode(var.controller)}, \"nsxt\": ${jsonencode(var.nsxt)}, \"avi_backend_servers_nsxt\": ${jsonencode(vsphere_virtual_machine.backend.*.guest_ip_addresses)}}'",
     ]
   }
 }

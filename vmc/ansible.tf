@@ -27,7 +27,7 @@ resource "null_resource" "foo" {
   provisioner "remote-exec" {
     inline      = [
       "chmod 600 ~/.ssh/${basename(var.privateKeyFile)}",
-      "cd ~/ansible ; ansible-playbook -i /opt/ansible/inventory/inventory.vmware.yml local.yml --extra-vars '{\"vmc_vsphere_server\": ${jsonencode(var.vmc_vsphere_server)}, \"avi_version\": ${jsonencode(basename(var.aviOvaFile))}, \"controllerPrivateIps\": ${jsonencode(vsphere_virtual_machine.controller.*.default_ip_address)}, \"vmc_vsphere_password\": ${jsonencode(var.vmc_vsphere_password)}, \"controller\": ${jsonencode(var.controller)}, \"vmc_vsphere_user\": ${jsonencode(var.vmc_vsphere_user)}, \"vmc\": ${jsonencode(var.vmc)}, \"avi_username\": ${jsonencode(var.avi_username)}, \"avi_password\": ${jsonencode(var.avi_password)}, \"avi_backend_servers_vmc\": ${jsonencode(vsphere_virtual_machine.backend.*.guest_ip_addresses)}}'",
+      "export ANSIBLE_NOCOLOR=\"True\" ; cd ~/ansible ; ansible-playbook -i /opt/ansible/inventory/inventory.vmware.yml local.yml --extra-vars '{\"vmc_vsphere_server\": ${jsonencode(var.vmc_vsphere_server)}, \"avi_version\": ${jsonencode(basename(var.aviOvaFile))}, \"controllerPrivateIps\": ${jsonencode(vsphere_virtual_machine.controller.*.default_ip_address)}, \"vmc_vsphere_password\": ${jsonencode(var.vmc_vsphere_password)}, \"controller\": ${jsonencode(var.controller)}, \"vmc_vsphere_user\": ${jsonencode(var.vmc_vsphere_user)}, \"vmc\": ${jsonencode(var.vmc)}, \"avi_username\": ${jsonencode(var.avi_username)}, \"avi_password\": ${jsonencode(var.avi_password)}, \"avi_backend_servers_vmc\": ${jsonencode(vsphere_virtual_machine.backend.*.guest_ip_addresses)}}'",
     ]
   }
 }
