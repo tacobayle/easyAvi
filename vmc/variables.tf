@@ -144,15 +144,121 @@ variable "vmc" {
         networks = [ "avi-vip"] # dynamic
       }
     ]
-    pool = {
-      name = "pool1"
-      lb_algorithm = "LB_ALGORITHM_ROUND_ROBIN"
-    }
+    httppolicyset = [
+      {
+        name = "http-request-policy-app3-content-switching-vmc"
+        http_request_policy = {
+          rules = [
+            {
+              name = "Rule 1"
+              match = {
+                path = {
+                  match_criteria = "CONTAINS"
+                  match_str = ["hello", "world"]
+                }
+              }
+              rewrite_url_action = {
+                path = {
+                  type = "URI_PARAM_TYPE_TOKENIZED"
+                  tokens = [
+                    {
+                      type = "URI_TOKEN_TYPE_STRING"
+                      str_value = "index.html"
+                    }
+                  ]
+                }
+                query = {
+                  keep_query = true
+                }
+              }
+              switching_action = {
+                action = "HTTP_SWITCHING_SELECT_POOL"
+                status_code = "HTTP_LOCAL_RESPONSE_STATUS_CODE_200"
+                pool_ref = "/api/pool?name=pool1-hello-vmc"
+              }
+            },
+            {
+              name = "Rule 2"
+              match = {
+                path = {
+                  match_criteria = "CONTAINS"
+                  match_str = ["avi"]
+                }
+              }
+              rewrite_url_action = {
+                path = {
+                  type = "URI_PARAM_TYPE_TOKENIZED"
+                  tokens = [
+                    {
+                      type = "URI_TOKEN_TYPE_STRING"
+                      str_value = ""
+                    }
+                  ]
+                }
+                query = {
+                  keep_query = true
+                }
+              }
+              switching_action = {
+                action = "HTTP_SWITCHING_SELECT_POOL"
+                status_code = "HTTP_LOCAL_RESPONSE_STATUS_CODE_200"
+                pool_ref = "/api/pool?name=pool2-avi-vmc"
+              }
+            },
+          ]
+        }
+      }
+    ]
+    pools = [
+      {
+        name = "pool1-hello-vmc"
+        lb_algorithm = "LB_ALGORITHM_ROUND_ROBIN"
+      },
+      {
+        name = "pool2-avi-vmc"
+        application_persistence_profile_ref = "System-Persistence-Client-IP"
+        default_server_port = 8080
+      }
+    ]
     virtualservices = {
       http = [
         {
-          name = "app1"
-          pool_ref = "pool1"
+          name = "app1-hello-world-vmc"
+          pool_ref = "pool1-hello-vmc"
+          services: [
+            {
+              port = 80
+              enable_ssl = "false"
+            },
+            {
+              port = 443
+              enable_ssl = "true"
+            }
+          ]
+        },
+        {
+          name = "app2-avi-vmc"
+          pool_ref = "pool2-avi-vmc"
+          services: [
+            {
+              port = 80
+              enable_ssl = "false"
+            },
+            {
+              port = 443
+              enable_ssl = "true"
+            }
+          ]
+        },
+        {
+          name = "app3-content-switching-vmc"
+          pool_ref = "pool2-avi-vmc"
+          http_policies = [
+            {
+              http_policy_set_ref = "/api/httppolicyset?name=http-request-policy-app3-content-switching-vmc"
+              index = 11
+            }
+          ]
           services: [
             {
               port = 80
