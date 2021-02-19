@@ -562,11 +562,11 @@
       when:
         - vcenterFoldersJson.stdout is defined
 
-    - name: Debug
-      debug:
-        msg: "{{ vcenterFolders }}"
-      when:
-        - vcenterFolders is defined
+#    - name: Debug
+#      debug:
+#        msg: "{{ vcenterFolders }}"
+#      when:
+#        - vcenterFolders is defined
 
     - name: Modify/Creating SE group - NSXT
       avi_serviceenginegroup:
