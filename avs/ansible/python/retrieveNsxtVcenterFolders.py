@@ -3,7 +3,7 @@ import sys, json, yaml
 #
 # Variables
 #
-fileCredential = sys.argv[1]
+avi_credentials = yaml.load(sys.argv[1])
 path = 'vcenter/folders'
 data = {"cloud_uuid": sys.argv[2], "vcenter_uuid": sys.argv[3]}
 tenant = "admin"

@@ -146,7 +146,7 @@ variable "vmc" {
     ]
     httppolicyset = [
       {
-        name = "http-request-policy-app3-content-switching-vmc"
+        name = "http-request-policy-app1-content-switching-vmc"
         http_request_policy = {
           rules = [
             {
@@ -223,39 +223,11 @@ variable "vmc" {
     virtualservices = {
       http = [
         {
-          name = "app1-hello-world-vmc"
-          pool_ref = "pool1-hello-vmc"
-          services: [
-            {
-              port = 80
-              enable_ssl = "false"
-            },
-            {
-              port = 443
-              enable_ssl = "true"
-            }
-          ]
-        },
-        {
-          name = "app2-avi-vmc"
-          pool_ref = "pool2-avi-vmc"
-          services: [
-            {
-              port = 80
-              enable_ssl = "false"
-            },
-            {
-              port = 443
-              enable_ssl = "true"
-            }
-          ]
-        },
-        {
-          name = "app3-content-switching-vmc"
+          name = "app1-content-switching-vmc"
           pool_ref = "pool2-avi-vmc"
           http_policies = [
             {
-              http_policy_set_ref = "/api/httppolicyset?name=http-request-policy-app3-content-switching-vmc"
+              http_policy_set_ref = "/api/httppolicyset?name=http-request-policy-app1-content-switching-vmc"
               index = 11
             }
           ]
