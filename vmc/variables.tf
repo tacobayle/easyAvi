@@ -71,15 +71,15 @@ variable "backend" {
   }
 }
 
-variable "client" {
-  type = map
-  default = {
-    cpu = 2
-    memory = 4096
-    disk = 20
-    template_name = "ubuntu-bionic-18.04-cloudimg-template"
-  }
-}
+//variable "client" {
+//  type = map
+//  default = {
+//    cpu = 2
+//    memory = 4096
+//    disk = 20
+//    template_name = "ubuntu-bionic-18.04-cloudimg-template"
+//  }
+//}
 
 variable "vmc" {
   default = {

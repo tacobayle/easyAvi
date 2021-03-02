@@ -28,10 +28,10 @@ data "vsphere_network" "networkBackend" {
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
-data "vsphere_network" "networkVip" {
-  name = var.vmc.network_vip.name
-  datacenter_id = data.vsphere_datacenter.dc.id
-}
+//data "vsphere_network" "networkVip" {
+//  name = var.vmc.network_vip.name
+//  datacenter_id = data.vsphere_datacenter.dc.id
+//}
 
 resource "vsphere_folder" "folderController" {
   path          = var.vmc.vcenter.folderAvi
@@ -54,13 +54,13 @@ resource "vsphere_tag_category" "ansible_group_backend" {
   ]
 }
 
-resource "vsphere_tag_category" "ansible_group_client" {
-  name = "ansible_group_client"
-  cardinality = "SINGLE"
-  associable_types = [
-    "VirtualMachine",
-  ]
-}
+//resource "vsphere_tag_category" "ansible_group_client" {
+//  name = "ansible_group_client"
+//  cardinality = "SINGLE"
+//  associable_types = [
+//    "VirtualMachine",
+//  ]
+//}
 
 resource "vsphere_tag_category" "ansible_group_controller" {
   name = "ansible_group_controller"
