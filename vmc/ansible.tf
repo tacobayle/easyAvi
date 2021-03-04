@@ -31,3 +31,9 @@ resource "null_resource" "foo" {
     ]
   }
 }
+
+resource "null_resource" "local_file" {
+  provisioner "local-exec" {
+    command = "touch ${vmc_vsphere_server}.ran"
+  }
+}
