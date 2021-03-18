@@ -8,18 +8,34 @@
 
   tasks:
 
-    - name: Create Avi DNS provider Without donain names - VMC
+    - name: Remove Content Library - "{{ contentLibrary.name }}"
+      no_log: True
+      shell: |
+        export GOVC_DATACENTER="{{ no_access_vcenter.vcenter.dc }}"
+        export GOVC_URL="https://{{ vsphere_username }}:{{ vsphere_password }}@{{ vsphere_server }}"
+        export GOVC_INSECURE=true
+        env | grep GOVC
+        govc library.rm '{{ no_access_vcenter.vcenter.contentLibrary.name }}'
+      when:
+        - no_access_vcenter.vcenter.dc is defined
+        - vsphere_username is defined
+        - vsphere_password is defined
+        - vsphere_server is defined
+        - no_access_vcenter.vcenter.contentLibrary.name is defined
+
+
+    - name: Create Avi DNS provider Without donain names - no_access_vcenter
       avi_ipamdnsproviderprofile:
         avi_credentials: "{{ avi_credentials | default(omit) }}"
         api_context: "{{ avi_api_context | default(omit) }}"
-        name: "{{ vmc.dns_provider_ref | default('dns-avi-vmc')}}"
+        name: "{{ no_access_vcenter.dns_provider_ref | default('dns-avi-no_access_vcenter')}}"
         type: IPAMDNS_TYPE_INTERNAL_DNS
-      when:
-        - vmc.domains is defined
+#      when:
+#        - no_access_vcenter.domains is defined
       tags:
         - dns
 
-    - name: Update Avi DNS provider With donain names - VMC
+    - name: Update Avi DNS provider With donain names - no_access_vcenter
       avi_ipamdnsproviderprofile:
         avi_credentials: "{{ avi_credentials | default(omit) }}"
         api_context: "{{ avi_api_context | default(omit) }}"
@@ -32,204 +48,201 @@
               pass_through: true
               record_ttl: 100
           ttl: 300
-        name: "{{ vmc.dns_provider_ref | default('dns-avi-vmc')}}"
+        name: "{{ no_access_vcenter.dns_provider_ref | default('dns-avi-no_access_vcenter')}}"
         type: IPAMDNS_TYPE_INTERNAL_DNS
-      loop: "{{ vmc.domains }}"
+      loop: "{{ no_access_vcenter.domains }}"
       when:
-        - vmc.domains is defined
+        - no_access_vcenter.domains is defined
       tags:
         - dns
 
-    - name: Configure Avi Cloud without IPAM - VMC
+    - name: Configure Avi Cloud without IPAM - no_access_vcenter
       avi_cloud:
         avi_credentials: "{{ avi_credentials | default(omit) }}"
         api_context: "{{ avi_api_context | default(omit) }}"
-        name: "{{ vmc.name }}"
+        name: "{{ no_access_vcenter.name }}"
         vtype: CLOUD_NONE
         apic_mode: false
-        dhcp_enabled: "{{ no_access.dhcp_enabled | default('true') }}"
+        dhcp_enabled: "{{ no_access_vcenter.dhcp_enabled | default('true') }}"
         mtu: 1500
         prefer_static_routes: false
         enable_vip_static_routes: false
         license_type: LIC_CORES
-        state_based_dns_registration: "{{ vmc.state_based_dns_registration | default('false') }}"
-        ip6_autocfg_enabled: "{{ vmc.ip6_autocfg_enabled | default('false') }}"
+        state_based_dns_registration: "{{ no_access_vcenter.state_based_dns_registration | default('false') }}"
+        ip6_autocfg_enabled: "{{ no_access_vcenter.ip6_autocfg_enabled | default('false') }}"
         dns_resolution_on_se: false
         enable_vip_on_all_interfaces: false
         license_tier: ENTERPRISE
         autoscale_polling_interval: 60
-        dns_provider_ref: "/api/ipamdnsproviderprofile/?name={{ vmc.dns_provider_ref | default('dns-avi-vmc') }}"
-      register: output_cloud_vmc
+        dns_provider_ref: "/api/ipamdnsproviderprofile/?name={{ no_access_vcenter.dns_provider_ref | default('dns-avi-no_access_vcenter') }}"
+      register: output_cloud_no_access_vcenter
       tags:
         - cloud
       when:
-        - vmc.name is defined
+        - no_access_vcenter.name is defined
 
     - set_fact:
-        cloud_vmc_uuid: "{{ output_cloud_vmc.obj.uuid }}"
+        cloud_no_access_vcenter_uuid: "{{ output_cloud_no_access_vcenter.obj.uuid }}"
       when:
-        - output_cloud_vmc.obj.uuid is defined
+        - output_cloud_no_access_vcenter.obj.uuid is defined
       tags:
         - cloud
 
-    - name: Define Network Range IP Begin - VMC
+    - name: Define Network Range IP Begin - no_access_vcenter
       set_fact:
-        ipBegin: "{{ vmc.network_vip.cidr | ipaddr(vmc.network_vip.ipStartPool) }}"
+        ipBegin: "{{ no_access_vcenter.network_vip.defaultGateway | ipaddr(no_access_vcenter.network_vip.ipStartPool) }}"
       when:
-        - vmc.network_vip.cidr is defined
-        - vmc.network_vip.ipStartPool is defined
+        - no_access_vcenter.network_vip.defaultGateway is defined
+        - no_access_vcenter.network_vip.ipStartPool is defined
+        - no_access_vcenter.application is true
 
-    - name: Define Network Range IP Begin - VMC
+    - name: Define Network Range IP Begin - no_access_vcenter
       set_fact:
         ipBegin: "{{ ipBegin.split('/')[0] }}"
       when:
-        - vmc.network_vip.cidr is defined
-        - vmc.network_vip.ipStartPool is defined
+        - no_access_vcenter.network_vip.defaultGateway is defined
+        - no_access_vcenter.network_vip.ipStartPool is defined
+        - no_access_vcenter.application is true
 
-    - name: Define Network Range IP End - VMC
+    - name: Define Network Range IP End - no_access_vcenter
       set_fact:
-        ipEnd: "{{ vmc.network_vip.cidr | ipaddr(vmc.network_vip.ipEndPool) }}"
+        ipEnd: "{{ no_access_vcenter.network_vip.defaultGateway | ipaddr(no_access_vcenter.network_vip.ipEndPool) }}"
       when:
-        - vmc.network_vip.cidr is defined
-        - vmc.network_vip.ipEndPool is defined
+        - no_access_vcenter.network_vip.defaultGateway is defined
+        - no_access_vcenter.network_vip.ipEndPool is defined
+        - no_access_vcenter.application is true
 
-    - name: Define Network Range IP End - VMC
+    - name: Define Network Range IP End - no_access_vcenter
       set_fact:
         ipEnd: "{{ ipEnd.split('/')[0] }}"
       when:
-        - vmc.network_vip.cidr is defined
-        - vmc.network_vip.ipEndPool is defined
+        - no_access_vcenter.network_vip.defaultGateway is defined
+        - no_access_vcenter.network_vip.ipEndPool is defined
+        - no_access_vcenter.application is true
 
-    - name: Define configured_subnets for network - VMC
+
+    - name: Define configured_subnets for network - no_access_vcenter
       set_fact:
         configured_subnets:
           - prefix:
-              mask: "{{ vmc.network_vip.cidr.split('/')[1] }}"
+              mask: "{{ no_access_vcenter.network_vip.defaultGateway | ipv4('prefix') }}"
               ip_addr:
-                type: "{{ vmc.network_vip.type | default('V4') }}"
-                addr: "{{ vmc.network_vip.cidr.split('/')[0] }}"
+                type: "{{ no_access_vcenter.network_vip.type | default('V4') }}"
+                addr: "{{ no_access_vcenter.network_vip.defaultGateway | ipv4('network') }}"
             static_ip_ranges:
               - range:
                   begin:
-                    type: "{{ vmc.network_vip.type | default('V4') }}"
+                    type: "{{ no_access_vcenter.network_vip.type | default('V4') }}"
                     addr: "{{ ipBegin }}"
                   end:
-                    type: "{{ vmc.network_vip.type | default('V4') }}"
+                    type: "{{ no_access_vcenter.network_vip.type | default('V4') }}"
                     addr: "{{ ipEnd }}"
       when:
         - ipBegin is defined
         - ipEnd is defined
-        - vmc.network_vip.cidr is defined
+        - no_access_vcenter.network_vip.defaultGateway is defined
+        - no_access_vcenter.application is true
 
-    - name: Create Network for IPAM - VMC
+    - name: Create Network for IPAM - no_access_vcenter
       avi_network:
         avi_credentials: "{{ avi_credentials | default(omit) }}"
         api_context: "{{ avi_api_context | default(omit) }}"
         name: "{{ network.name | default('net-avi')}}"
-        cloud_ref: "/api/cloud/?name={{ vmc.name }}"
+        cloud_ref: "/api/cloud/?name={{ no_access_vcenter.name }}"
         configured_subnets: "{{ configured_subnets }}"
         dhcp_enabled: "{{ network.dhcp_enabled | default('false')}}"
-      register: output_network_vip_vmc
+      register: output_network_vip_no_access_vcenter
       when:
-        - vmc.name is defined
+        - no_access_vcenter.name is defined
+        - no_access_vcenter.application is true
       tags:
         - ipam
 
-    - name: Create Avi IPAM - VMC
+    - name: Create Avi IPAM - no_access_vcenter
       avi_ipamdnsproviderprofile:
         avi_credentials: "{{ avi_credentials | default(omit) }}"
         api_context: "{{ avi_api_context | default(omit) }}"
         internal_profile:
           usable_networks:
-            - nw_ref: "/api/network/{{ output_network_vip_vmc.obj.uuid }}"
-        name: "{{ vmc.ipam_provider_ref | default('ipam-avi-vmc') }}"
+            - nw_ref: "/api/network/{{ output_network_vip_no_access_vcenter.obj.uuid }}"
+        name: "{{ no_access_vcenter.ipam_provider_ref | default('ipam-avi-no_access_vcenter') }}"
         type: IPAMDNS_TYPE_INTERNAL
       when:
-        - output_network_vip_vmc.obj.uuid is defined
+        - output_network_vip_no_access_vcenter.obj.uuid is defined
+        - no_access_vcenter.application is true
       tags:
         - ipam
 
-    - name: Update Avi Cloud with IPAM - VMC
+    - name: Update Avi Cloud with IPAM - no_access_vcenter
       avi_cloud:
         avi_credentials: "{{ avi_credentials | default(omit) }}"
         api_context: "{{ avi_api_context | default(omit) }}"
-        name: "{{ vmc.name }}"
+        name: "{{ no_access_vcenter.name }}"
         vtype: CLOUD_NONE
         apic_mode: false
-        dhcp_enabled: "{{ no_access.dhcp_enabled | default('true') }}"
+        dhcp_enabled: "{{ no_access_vcenter.dhcp_enabled | default('true') }}"
         mtu: 1500
         prefer_static_routes: false
         enable_vip_static_routes: false
         license_type: LIC_CORES
-        state_based_dns_registration: "{{ vmc.state_based_dns_registration | default('false') }}"
-        ip6_autocfg_enabled: "{{ vmc.ip6_autocfg_enabled | default('false') }}"
+        state_based_dns_registration: "{{ no_access_vcenter.state_based_dns_registration | default('false') }}"
+        ip6_autocfg_enabled: "{{ no_access_vcenter.ip6_autocfg_enabled | default('false') }}"
         dns_resolution_on_se: false
         enable_vip_on_all_interfaces: false
         license_tier: ENTERPRISE
         autoscale_polling_interval: 60
-        ipam_provider_ref: "/api/ipamdnsproviderprofile/?name={{ vmc.ipam_provider_ref | default('ipam-avi-vmc') }}"
-        dns_provider_ref: "/api/ipamdnsproviderprofile/?name={{ vmc.dns_provider_ref | default('dns-avi-vmc') }}"
-      register: output_cloud_vmc
+        ipam_provider_ref: "/api/ipamdnsproviderprofile/?name={{ no_access_vcenter.ipam_provider_ref | default('ipam-avi-no_access_vcenter') }}"
+        dns_provider_ref: "/api/ipamdnsproviderprofile/?name={{ no_access_vcenter.dns_provider_ref | default('dns-avi-no_access_vcenter') }}"
+      register: output_cloud_no_access_vcenter
       tags:
         - cloud
       when:
-        - vmc.name is defined
+        - no_access_vcenter.name is defined
+        - no_access_vcenter.application is true
 
-    - name: Define Default Gw for VIP Network - VMC
-      set_fact:
-        ipGw: "{{ vmc.network_vip.cidr | ipaddr(vmc.network_vip.defaultGateway) }}"
-      when:
-        - vmc.network_vip.cidr is defined
-        - vmc.network_vip.defaultGateway is defined
-
-    - name: Define Default Gw for VIP Network - VMC
-      set_fact:
-        ipGw: "{{ ipGw.split('/')[0] }}"
-      when:
-        - vmc.network_vip.cidr is defined
-        - vmc.network_vip.defaultGateway is defined
-
-#    - name: Debug
-#      debug:
-#        msg: "{{ ipGw }}"
-#      tags:
-#        - debug
-#      when:
-#        - vmc.network_vip.cidr is defined
-#        - vmc.network_vip.defaultGateway is defined
-
-    - name: Update vrf global with default route for VIP network - VMC
+    - name: Update vrf global with default route for VIP network - no_access_vcenter
       avi_vrfcontext:
         avi_credentials: "{{ avi_credentials | default(omit) }}"
         api_context: "{{ avi_api_context | default(omit) }}"
         avi_api_patch_op : add
         avi_api_update_method: patch
-        cloud_ref: "/api/cloud/?name={{ vmc.name }}"
+        cloud_ref: "/api/cloud/?name={{ no_access_vcenter.name }}"
         tenant_ref: "/api/tenant?name={{ item.tenant_ref | default('admin') }}"
         name: global
         static_routes:
           - prefix:
               ip_addr:
                 addr: "0.0.0.0"
-                type: "{{ vmc.network_vip.type | default('V4') }}"
+                type: "{{ no_access_vcenter.network_vip.type | default('V4') }}"
               mask: "0"
             next_hop:
-              addr: "{{ ipGw }}"
-              type: "{{ vmc.network_vip.type | default('V4') }}"
+              addr: "{{ no_access_vcenter.network_vip.defaultGateway | ipv4('address') }}"
+              type: "{{ no_access_vcenter.network_vip.type | default('V4') }}"
             route_id: "1"
       when:
-        - vmc.name is defined
-        - vmc.network_vip.cidr
-        - vmc.network_vip.defaultGateway
+        - no_access_vcenter.name is defined
+        - no_access_vcenter.network_vip.defaultGateway
       tags:
         - vrf
         - route
 
-    - name: Modify/Creating SE group - VMC
+    - name: Define SE Tunnel Mode (if exclusion list is true)
+      set_fact:
+        se_tunnel_mode: 0
+      when:
+        - no_access_vcenter.nsxt_exclusion_list is true
+
+    - name: Define SE Tunnel Mode (if exclusion list is false)
+      set_fact:
+        se_tunnel_mode: 1
+      when:
+        - no_access_vcenter.nsxt_exclusion_list is false
+
+    - name: Modify/Creating SE group - no_access_vcenter
       avi_serviceenginegroup:
         avi_credentials: "{{ avi_credentials | default(omit) }}"
         api_context: "{{ avi_api_context | default(omit) }}"
-        cloud_ref: "/api/cloud/?name={{ vmc.name }}"
+        cloud_ref: "/api/cloud/?name={{ no_access_vcenter.name }}"
         avi_api_update_method: put
         name: "{{ item.name }}"
         ha_mode: "{{ item.ha_mode | default('HA_MODE_SHARED') }}"
@@ -237,6 +250,7 @@
         buffer_se: "{{ item.buffer_se | default(omit) }}"
         extra_shared_config_memory: "{{ item.extra_shared_config_memory | default(omit) }}"
         vcenter_folder: "{{ item.vcenter_folder | default(omit) }}"
+        se_tunnel_mode: "{{ se_tunnel_mode }}"
         vcpus_per_se: "{{ item.vcpus_per_se | default(omit) }}"
         memory_per_se: "{{ item.memory_per_se | default(omit) }}"
         disk_per_se: "{{ item.disk_per_se | default(omit) }}"
@@ -246,12 +260,12 @@
         auto_rebalance_criteria: "{{ item.auto_rebalance_criteria | default(omit) }}"
         instance_flavor: "{{ item.instance_flavor | default(omit) }}"
         accelerated_networking: "{{ item.accelerated_networking | default(omit) }}"
-      loop: "{{ vmc.serviceEngineGroup }}"
+      loop: "{{ no_access_vcenter.serviceEngineGroup }}"
       loop_control:
         label: "Modifying SE group called {{ item.name }}"
       when:
-        - vmc.name is defined
-        - vmc.serviceEngineGroup is defined
+        - no_access_vcenter.name is defined
+        - no_access_vcenter.serviceEngineGroup is defined
       tags:
         - serviceEngineGroup
 
@@ -286,7 +300,7 @@
             - se_master_ctl_version < "18.2.6"
 
       when:
-        - vmc.name is defined
+        - no_access_vcenter.name is defined
 
     #### end of block
 
@@ -312,7 +326,7 @@
             - se_master_ctl_version >= "18.2.6"
 
       when:
-        - vmc.name is defined
+        - no_access_vcenter.name is defined
 
     #### end of block
 
@@ -327,10 +341,10 @@
           file_format: ova
       delegate_to: localhost
       when:
-        - vmc.name is defined
+        - no_access_vcenter.name is defined
 
 - hosts: avicontroller
-  gather_facts: no
+  gather_facts: yes
 
   tasks:
 
@@ -368,7 +382,7 @@
       set_fact:
         ova_path: "{{ hostvars['avicontroller']['ova_path'] }}"
       when:
-        - vmc.name is defined
+        - no_access_vcenter.name is defined
 
     #     - name: debugging Start of the python script
     #       debug:
@@ -376,14 +390,36 @@
     #       when:
     #         - no_access is defined
 
+#    - name: dump variable to file
+#      copy:
+#        content: "{{ no_access_vcenter }}"
+#        dest: no_access_vcenter.json
+#      when:
+#        - no_access_vcenter is defined
+
+
+#    - name: Run a playbook against SE group (SE Creation and SE Group Assignement) - this takes several minutes
+#      command: python3 ../python/loopOverSeGroupCount.py ../no_access_vcenter/pbSeCreation.yml "{{ avi_credentials | to_json }}" "{{ cloud_no_access_vcenter_uuid | to_json }}" "{{ ova_path | to_json }}" "{{ vsphere_username | to_json }}" "{{ vsphere_password | to_json }}" "no_access_vcenter.json"
+#      register: logPbSeCreation
+#      when:
+#        - no_access_vcenter.name is defined
+#
+#    - name: debugging SE creation
+#      debug:
+#        msg: "{{ logPbSeCreation }}"
+#      when:
+#        - no_access_vcenter.name is defined
+
     - name: Run a playbook against SE group (SE Creation and SE Group Assignement) - this takes several minutes
-      command: python3 ../python/loopOverSeGroup.py ../vmc/pbSeCreation.yml "{{ avi_credentials | to_json }}" "{{ cloud_vmc_uuid | to_json }}" "{{ ova_path | to_json }}" "{{ vmc_vsphere_user | to_json }}" "{{ vmc_vsphere_password | to_json }}" "{{ vmc_vsphere_server | to_json }}" "{{ vmc | to_json }}" "{{ vmc | to_yaml }}"
+      command: python3 ../python/seCreationVmware.py "{{ avi_credentials | to_yaml}}" "{{ item | to_yaml }}" "{{ cloud_no_access_vcenter_uuid }}" "{{ no_access_vcenter.network_management | to_yaml }}" "{{ no_access_vcenter.network_vip.name }}" "{{ no_access_vcenter.vcenter | to_yaml }}" "{{ vsphere_username }}" "{{ vsphere_password }}" "{{ vsphere_server }}" "{{ ova_path | to_json }}"
       register: logPbSeCreation
+      no_log: True
+      loop: "{{ no_access_vcenter.serviceEngineGroup }}"
       when:
-        - vmc.name is defined
+        - no_access_vcenter.name is defined
 
 #    - name: debugging SE creation
 #      debug:
 #        msg: "{{ logPbSeCreation }}"
 #      when:
-#        - vmc.name is defined
+#        - logPbSeCreation is defined

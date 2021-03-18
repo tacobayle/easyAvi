@@ -1,0 +1,8 @@
+---
+- import_playbook: pbPreCheck.yml
+- import_playbook: pbInitCluster.yml
+- import_playbook: pbSystemConfig.yml
+- import_playbook: no_access_vcenter/pbCloud.yml
+  when: no_access_vcenter is defined
+- import_playbook: no_access_vcenter/pbVs.yml
+  when: no_access_vcenter is defined

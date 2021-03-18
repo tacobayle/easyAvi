@@ -1,6 +1,0 @@
----
-- import_playbook: pbPreCheck.yml
-- import_playbook: pbInitCluster.yml
-- import_playbook: pbSystemConfig.yml
-- import_playbook: vmc/pbCloudVmc.yml
-- import_playbook: vmc/pbVsVmc.yml

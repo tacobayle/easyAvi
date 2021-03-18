@@ -1,23 +1,23 @@
 
 
-resource "vsphere_tag" "ansible_group_backend" {
-  name             = "backend"
-  category_id      = vsphere_tag_category.ansible_group_backend.id
-}
+//resource "vsphere_tag" "ansible_group_backend" {
+//  name             = "backend"
+//  category_id      = vsphere_tag_category.ansible_group_backend.id
+//}
 
 
 data "template_file" "backend_userdata" {
-  count = (var.vmc.application == true ? 2 : 0)
+  count = (var.no_access_vcenter.application == true ? 2 : 0)
   template = file("${path.module}/userdata/backend.userdata")
   vars = {
-    pubkey       = file(var.publicKeyFile)
+    pubkey       = file(var.jump["public_key_path"])
     url_demovip_server = var.backend.url_demovip_server
     username = var.backend.username
   }
 }
 
 resource "vsphere_virtual_machine" "backend" {
-  count            = (var.vmc.application == true ? 2 : 0)
+  count = (var.no_access_vcenter.application == true ? 2 : 0)
   name             = "backend-${count.index}"
   datastore_id     = data.vsphere_datastore.datastore.id
   resource_pool_id = data.vsphere_resource_pool.pool.id
@@ -47,14 +47,14 @@ resource "vsphere_virtual_machine" "backend" {
     template_uuid = vsphere_content_library_item.ubuntu.id
   }
 
-  tags = [
-        vsphere_tag.ansible_group_backend.id,
-  ]
+//  tags = [
+//        vsphere_tag.ansible_group_backend.id,
+//  ]
 
   vapp {
     properties = {
      hostname    = "backend-${count.index}"
-     public-keys = file(var.publicKeyFile)
+     public-keys = file(var.jump["public_key_path"])
      user-data   = base64encode(data.template_file.backend_userdata[count.index].rendered)
    }
  }

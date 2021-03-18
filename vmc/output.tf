@@ -4,8 +4,12 @@ output "jump" {
   value = vmc_public_ip.public_ip_jump.ip
 }
 
-output "controllers" {
+output "controllers_public" {
   value = vmc_public_ip.public_ip_controller.*.ip
+}
+
+output "controllers_private" {
+  value = vsphere_virtual_machine.controller.*.default_ip_address
 }
 
 output "httpVsPublicIP" {
@@ -14,4 +18,12 @@ output "httpVsPublicIP" {
 
 output "dnsVsPublicIP" {
   value = vmc_public_ip.public_ip_vsDns.*.ip
+}
+
+output "aviUsername" {
+  value = var.avi_username
+}
+
+output "aviPassword" {
+  value = var.avi_password
 }
