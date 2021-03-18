@@ -126,7 +126,7 @@ variable "no_access_vcenter" {
     dhcp_enabled = true # static
     application = true # dynamic, from WebUI - if application is enabled
     public_ip = true # dynamic, from WebUI - if application is enabled and public_ip is enabled
-    dfw_rules = false # dynamic, from WebUI - if application is enabled and dfw_rules is enabled
+    dfw_rules = true # dynamic, from WebUI - if application is enabled and dfw_rules is enabled
     nsxt_exclusion_list = true # dynamic, from WebUI - based of nsx_exclusion or Tunnel mode
     vcenter = {
       dc = "SDDC-Datacenter" # static
