@@ -28,11 +28,11 @@
         - avi_password is defined
         - avi_username is defined
 
-    - name: Debug variable avi_credentials
-      debug:
-        msg: "{{ avi_credentials }}"
-      tags:
-        - debug
+#    - name: Debug variable avi_credentials
+#      debug:
+#        msg: "{{ avi_credentials }}"
+#      tags:
+#        - debug
 
     - name: Update user admin password
       avi_useraccount:
