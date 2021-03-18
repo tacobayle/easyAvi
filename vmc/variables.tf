@@ -156,7 +156,7 @@ variable "no_access_vcenter" {
       se_in_provider_context = "false" # static
       tenant_access_to_provider_se = "true" # static
       tenant_vrf = "false" # static
-      public_ip = true # dynamic, from WebUI - if public IP for controller has been enabled
+      public_ip = false # dynamic, from WebUI - if public IP for controller has been enabled
     }
     domains = [
       {
