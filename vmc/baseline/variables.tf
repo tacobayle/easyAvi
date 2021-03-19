@@ -23,8 +23,8 @@ variable "jump" {
     cpu = 2
     memory = 4096
     disk = 20
-    public_key_path = "~/.ssh/cloudKey.pub"
-    private_key_path = "~/.ssh/cloudKey"
+    public_key_path = "~/.ssh/id_rsa.pub"
+    private_key_path = "~/.ssh/id_rsa"
     wait_for_guest_net_timeout = 2
     template_name = "ubuntu-bionic-18.04-cloudimg-template"
     avisdkVersion = "18.2.9"
