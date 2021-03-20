@@ -82,7 +82,7 @@
         - no_access_vcenter.name is defined
         - no_access_vcenter.application is true
 
-    - name: Configure Avi Cloud without IPAM - no_access_vcenter
+    - name: Configure Avi Cloud without IPAM without DNS - no_access_vcenter
       avi_cloud:
         avi_credentials: "{{ avi_credentials | default(omit) }}"
         api_context: "{{ avi_api_context | default(omit) }}"
