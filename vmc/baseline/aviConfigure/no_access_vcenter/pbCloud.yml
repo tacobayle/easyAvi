@@ -100,7 +100,7 @@
         enable_vip_on_all_interfaces: false
         license_tier: ENTERPRISE
         autoscale_polling_interval: 60
-      register: output_cloud_no_access_vcenter
+      register: output_cloud_no_access_vcenter_no_dns
       tags:
         - cloud
       when:
@@ -110,7 +110,16 @@
     - set_fact:
         cloud_no_access_vcenter_uuid: "{{ output_cloud_no_access_vcenter.obj.uuid }}"
       when:
-        - output_cloud_no_access_vcenter.obj.uuid is defined
+        - no_access_vcenter.application is true
+        - no_access_vcenter.name is defined
+      tags:
+        - cloud
+
+    - set_fact:
+        cloud_no_access_vcenter_uuid: "{{ output_cloud_no_access_vcenter_no_dns.obj.uuid }}"
+      when:
+        - no_access_vcenter.application is false
+        - no_access_vcenter.name is defined
       tags:
         - cloud
 
