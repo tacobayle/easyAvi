@@ -200,8 +200,8 @@
       loop_control:
         label: "{{ item.name }}"
       when:
-        - no_access_vcenter.httppolicyset is defined
         - no_access_vcenter.application is true
+        - no_access_vcenter.httppolicyset is defined
 
     - name: Create HTTP Virtualservice (based on vsvip)
       avi_virtualservice:
