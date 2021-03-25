@@ -1737,7 +1737,7 @@ elif intent_name == "remove-exclude-list":
         else:
             print('Error when removing EasyAvi SE with path' + group_easyavi_path + ' in the exclusion list')
     except:
-      print('no exclusion list to be updated')
+      print('no exclusion list updated')
 #     member_list.append(sys.argv[5])
 #     new_exclude_list = setSDDCDFWExcludList(proxy,session_token, member_list)
 #     if new_exclude_list == 200:
