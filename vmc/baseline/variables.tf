@@ -213,7 +213,7 @@ variable "no_access_vcenter" {
     ]
     httppolicyset = [
       {
-        name = "http-request-policy-app1-content-switching-vmc" # static
+        name = "http-request-policy-app1" # static
         http_request_policy = {
           rules = [
             {
@@ -290,11 +290,11 @@ variable "no_access_vcenter" {
     virtualservices = {
       http = [
         {
-          name = "app1-content-switching-vmc" # static
+          name = "app1" # static
           pool_ref = "pool1-hello-vmc" # static
           http_policies = [
             {
-              http_policy_set_ref = "/api/httppolicyset?name=http-request-policy-app1-content-switching-vmc" # static
+              http_policy_set_ref = "/api/httppolicyset?name=http-request-policy-app1" # static
               index = 11 # static
             }
           ]
