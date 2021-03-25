@@ -1721,21 +1721,23 @@ elif intent_name == "remove-easyavi-rules":
 #           print(getSDDCCGWRule(proxy,session_token))
         else :
            print("Issues deleting the security rule called " + rule['display_name']   + " - Check the syntax.")
-elif intent_name == "remove-exclude-list-easyavi":
+elif intent_name == "remove-exclude-list":
     cgw_groups = getSDDCGroups(proxy, session_token, "cgw")
     for group in cgw_groups:
       if group['display_name'] == sys.argv[5]:
         group_easyavi_path = group['path']
-#     print(group_easyavi_path)
     member_list = getSDDCDFWExcludList(proxy,session_token)
-    if group_easyavi_path in member_list:
-      member_list.remove(group_easyavi_path)
-      print('removing EasyAvi SE with path' + group_easyavi_path + ' in the exclusion list')
-      new_exclude_list = setSDDCDFWExcludList(proxy,session_token, member_list)
-      if new_exclude_list == 200:
-          print("\n The new exclusion list has been updated.")
-      else:
-          print('Error when removing EasyAvi SE with path' + group_easyavi_path + ' in the exclusion list')
+    try:
+      if group_easyavi_path in member_list:
+        member_list.remove(group_easyavi_path)
+        print('removing EasyAvi SE with path' + group_easyavi_path + ' in the exclusion list')
+        new_exclude_list = setSDDCDFWExcludList(proxy,session_token, member_list)
+        if new_exclude_list == 200:
+            print("\n The new exclusion list has been updated.")
+        else:
+            print('Error when removing EasyAvi SE with path' + group_easyavi_path + ' in the exclusion list')
+    except:
+      print('no exclusion list to be updated')
 #     member_list.append(sys.argv[5])
 #     new_exclude_list = setSDDCDFWExcludList(proxy,session_token, member_list)
 #     if new_exclude_list == 200:
