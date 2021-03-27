@@ -3,6 +3,8 @@ export GOVC_DATACENTER=$(cat sddc.json | jq -r .no_access_vcenter.vcenter.dc)
 export GOVC_URL=$(cat sddc.json | jq -r .vmc_vsphere_username):$(cat sddc.json | jq -r .vmc_vsphere_password)@$(cat sddc.json | jq -r .vmc_vsphere_server)
 export GOVC_INSECURE=true
 export GOVC_DATASTORE=$(cat sddc.json | jq -r .no_access_vcenter.vcenter.datastore)
+echo "destroying SE Content Library - expected to fail"
+govc library.rm Easy-Avi-CL-SE-NoAccess
 IFS=$'\n'
 for vm in $(govc find / -type m)
 do
