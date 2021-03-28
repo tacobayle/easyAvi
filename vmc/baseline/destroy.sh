@@ -21,4 +21,5 @@ echo "removing EasyAvi-SE from exclusion list"
 python3 python/pyVMCDestroy.py $(cat sddc.json | jq -r .vmc_nsx_token) $(cat sddc.json | jq -r .vmc_org_id) $(cat sddc.json | jq -r .vmc_sddc_id) remove-exclude-list EasyAvi-SE
 echo "TF destroy"
 terraform destroy -auto-approve -var-file=sddc.json -var-file=ip.json
+rm easyavi.ran
 
