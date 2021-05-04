@@ -55,6 +55,7 @@ resource "null_resource" "ansible_hosts_backend_dynamic" {
 
 resource "null_resource" "ansible_hosts_static3" {
   depends_on = [null_resource.ansible_hosts_backend_dynamic]
+  count = (var.no_access_vcenter.application == true ? 1 : 0)
   provisioner "local-exec" {
     command = "echo '  vars:' | tee -a hosts ; echo '    ansible_user: ${var.backend.username}' | tee -a hosts"
   }
